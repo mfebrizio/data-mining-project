@@ -1,0 +1,7 @@
+# data subfolders
+raw/**
+processed/**
+clean/**
+
+# json metadata
+.json
