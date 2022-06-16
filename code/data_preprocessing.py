@@ -107,10 +107,15 @@ print(dfCore['docket_exists'].value_counts(dropna=False), '\n')
 
 
 
+# action
+# title
+# dates
+# abstract
 
-docket_exists
 
-dfCore.info()
+#docket_exists
+
+#dfCore.info()
 
 
 
