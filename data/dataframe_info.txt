@@ -93,3 +93,7 @@ https://stackoverflow.com/questions/65327433/machine-learning-classification-usi
 
 https://scikit-learn.org/stable/supervised_learning.html#supervised-learning
 
+https://scikit-learn.org/stable/auto_examples/compose/plot_column_transformer_mixed_types.html
+
+https://scikit-learn.org/stable/modules/feature_selection.html
+
