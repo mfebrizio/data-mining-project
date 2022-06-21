@@ -2,6 +2,7 @@
 raw/**
 processed/**
 clean/**
+analysis/**
 
 # json metadata
 .json
