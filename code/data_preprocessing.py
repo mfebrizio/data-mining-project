@@ -1,16 +1,20 @@
-# --------------------------------------------------
+#%% --------------------------------------------------
 # initialize
+
+# import packages
 import json
 from pathlib import Path
+import warnings
 
 import numpy as np
 import pandas as pd
 
 from clean_agencies import *
+#from clean_text import *
 from columns_to_date import *
 from search_columns import *
 
-# --------------------------------------------------
+# set directory path
 p = Path.cwd()
 data_dir = p.parent.joinpath('data', 'raw')
 if data_dir.exists():
@@ -18,7 +22,10 @@ if data_dir.exists():
 else:
     print("Directory doesn't exist.")
 
-# --------------------------------------------------
+# ignore warnings
+warnings.filterwarnings("ignore")
+
+#%% --------------------------------------------------
 # load data
 filePath = data_dir / r"documents_endpoint_rules_combo_1994_1999.json"
 with open(filePath, "r") as f:
@@ -27,24 +34,28 @@ with open(filePath, "r") as f:
 # convert to dataframe and check structure
 df = pd.DataFrame(data['results'])
 df.info()
+print("#", 50 * "-")
 
-# --------------------------------------------------
+#%% --------------------------------------------------
 # Examine target labels
 # categories of documents to examine
-print(df['type'].value_counts(),'\n')
+print("All document types: ", df['type'].value_counts(), sep='\n')
+print("#", 50 * "-")
 
 # filter df of core document types
 core_types = ["Notice", "Rule", "Proposed Rule", "Presidential Document"]
 bool_core = np.array([True if t in core_types else False for t in df['type'].tolist()])
 dfCore = df.loc[bool_core, :]
-print(dfCore["type"].value_counts(),'\n')
+print("Labeled documents (4 main types):", dfCore["type"].value_counts(), sep='\n')
+print("#", 50 * "-")
 
-# ["Uncategorized Document"]
+# Uncategorized Documents
 bool_uncat = np.array([True if t == "Uncategorized Document" else False for t in df['type'].tolist()])
 dfUncat = df.loc[bool_uncat, :]
-print(dfUncat["type"].value_counts(),'\n')
+print("Unlabeled Documents:", dfUncat["type"].value_counts(), sep='\n')
+print("#", 50 * "-")
 
-# --------------------------------------------------
+#%% --------------------------------------------------
 # Data cleaning
 
 # clean up publication date column
@@ -54,16 +65,20 @@ dfCore.loc[:, 'publication_year'] = dfCore['publication_dt'].apply(lambda x: x.y
 # clean up agencies column
 dfCore = FR_clean_agencies(dfCore, column='agencies')
 
-# --------------------------------------------------
+#%% --------------------------------------------------
 # Create new variables
 
 # count of UQ agencies per document
 dfCore.loc[:, 'agencies_count_uq'] = dfCore['agencies_slug_uq'].apply(lambda x: len(x))
 
+# reformat agency columns
+dfCore.loc[:, 'agencies_slug_uq'] = dfCore['agencies_slug_uq'].apply(lambda x: "; ".join(x))
+dfCore.loc[:, 'agencies_id_uq'] = dfCore['agencies_id_uq'].apply(lambda x: "; ".join(list(map(str,x))))
+
 # create abstract length variable
 # simple tokenization of 'abstract' column using whitespace characters
-dfCore.loc[:, 'abstract_tokens'] = dfCore['abstract'].str.split(pat = r'\\s', regex=True)
-abstract_length = [len(a) if a != None else None for a in dfCore.loc[:,'abstract_tokens']]
+dfCore.loc[:, 'abstract_tokens'] = dfCore['abstract'].str.split(pat=r'\s', regex=True)
+abstract_length = [len(a) if a is not None else 0 for a in dfCore.loc[:, 'abstract_tokens']]
 dfCore.loc[:, 'abstract_length'] = abstract_length
 
 # extract page_views count
@@ -102,37 +117,64 @@ print(dfCore['CFR_ref_count'].value_counts(dropna=False), '\n')
 dfCore.loc[:, 'docket_exists'] = [0 if x == {} else 1 for x in dfCore['regulations_dot_gov_info']]
 print(dfCore['docket_exists'].value_counts(dropna=False), '\n')
 
-# --------------------------------------------------
+#%% --------------------------------------------------
 # Text column cleaning
+# these columns: # action; abstract; title; [x dates]
 
+# boolean for filtering presidential documents
+bool_prez = np.array(dfCore['type'] == "Presidential Document")
 
+# impute missing text: action
+bool_na = np.array(dfCore['action'].isna())
+dfCore.loc[bool_na & bool_prez, 'action'] = 'presidential document'
+dfCore.loc[bool_na & ~bool_prez, 'action'] = dfCore.loc[bool_na & ~bool_prez, 'title'].tolist()
 
-# action
-# title
-# dates
-# abstract
+# impute missing text: abstract/summary
+bool_na = np.array(dfCore['abstract'].isna())
+dfCore.loc[bool_na & bool_prez, 'abstract'] = 'presidential document'
+dfCore.loc[bool_na & ~bool_prez, 'abstract'] = dfCore.loc[bool_na & ~bool_prez, 'title'].tolist()
 
+# clean text columns -- this takes too long!
+# test: clean_text(dfCore['action'][0])
+# dfCore.loc[:, 'action'] = dfCore['action'].apply(clean_text)
+# dfCore.loc[:, 'abstract'] = dfCore['abstract'].apply(clean_text)
+# dfCore.loc[:, 'title'] = dfCore['title'].apply(clean_text)
 
-#docket_exists
+#%% --------------------------------------------------
+# Filter dataframe columns
 
-#dfCore.info()
+# columns to keep for modeling
+label_col = ['type']
+id_cols = ['document_number', 'citation', 'agencies_id_uq', 'agencies_slug_uq', 'publication_year']
+num_cols = ['page_length', 'agencies_count_uq', 'abstract_length', 'page_views_count', 'RIN_count', 'CFR_ref_count']
+cat_cols = ['sig', 'effective_date_exists', 'comments_close_exists', 'docket_exists']
+text_cols = ['action', 'abstract', 'title']
+keep_cols = label_col + id_cols + num_cols + cat_cols + text_cols
 
+# create new dataframe
+dfModeling = dfCore.loc[:, keep_cols].copy()
 
+#%% --------------------------------------------------
+# Export data for modeling
 
-# clean agencies column //
-# len(agencies_slug_uq) //
-# len(abstract) //
-# extract page_views count //
-# convert significant to 0, 1, nan //
-# effective date exists //
-# comments_close_on exists //
-# RINs exist //
-# cfr_references exist //
-# regs dot gov exist //
+# set directory path
+p = Path.cwd()
+data_dir = p.parent.joinpath('data', 'processed')
+if data_dir.exists():
+    pass
+else:
+    try:
+        data_dir.mkdir(parents=True)
+    except:
+        print("Cannot create data directory.")
 
-# clean:
-# action
-# title
-# dates
-# abstract
+# save as csv
+filePath = data_dir / r"labeled_data_for_modeling.csv"
+with open(filePath, "w", encoding="utf-8") as f:
+    dfModeling.to_csv(f, index_label="index", line_terminator="\n")
 
+# check if saved
+if filePath.exists():
+    print("Saved as CSV!")
+else:
+    print("Error saving file.")
