@@ -65,6 +65,10 @@ dfCore.loc[:, 'publication_year'] = dfCore['publication_dt'].apply(lambda x: x.y
 # clean up agencies column
 dfCore = FR_clean_agencies(dfCore, column='agencies')
 
+# fix negative page length; impute with length == 1
+bool_fix = np.array(dfCore['page_length'] <= 0)
+dfCore.loc[bool_fix, 'page_length'] = 1
+
 #%% --------------------------------------------------
 # Create new variables
 
@@ -117,6 +121,14 @@ print(dfCore['CFR_ref_count'].value_counts(dropna=False), '\n')
 dfCore.loc[:, 'docket_exists'] = [0 if x == {} else 1 for x in dfCore['regulations_dot_gov_info']]
 print(dfCore['docket_exists'].value_counts(dropna=False), '\n')
 
+# document issued by Executive Office of the President
+bool_na = np.array(dfCore['agencies_count_uq'].notna())
+bool_eop = np.array(dfCore.loc[bool_na, 'agencies_slug_uq'].apply(
+    lambda x: 'executive-office-of-the-president' in x.split("; ")))
+dfCore.loc[:, 'eop'] = 0
+dfCore.loc[bool_eop, 'eop'] = 1
+print(dfCore['eop'].value_counts(dropna=False), '\n')
+
 #%% --------------------------------------------------
 # Text column cleaning
 # these columns: # action; abstract; title; [x dates]
@@ -147,7 +159,7 @@ dfCore.loc[bool_na & ~bool_prez, 'abstract'] = dfCore.loc[bool_na & ~bool_prez, 
 label_col = ['type']
 id_cols = ['document_number', 'citation', 'agencies_id_uq', 'agencies_slug_uq', 'publication_year']
 num_cols = ['page_length', 'agencies_count_uq', 'abstract_length', 'page_views_count', 'RIN_count', 'CFR_ref_count']
-cat_cols = ['sig', 'effective_date_exists', 'comments_close_exists', 'docket_exists']
+cat_cols = ['sig', 'effective_date_exists', 'comments_close_exists', 'docket_exists', 'eop']
 text_cols = ['action', 'abstract', 'title']
 keep_cols = label_col + id_cols + num_cols + cat_cols + text_cols
 
