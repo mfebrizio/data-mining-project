@@ -38,12 +38,12 @@ a = 622
 
 # column dtypes
 label = 'type'
-numeric_features = ['page_length', 'agencies_count_uq', 'abstract_length', 'page_views_count', 'RIN_count', 'CFR_ref_count']
-categorical_features = ['sig', 'effective_date_exists', 'comments_close_exists', 'docket_exists']
-text_features = ['action', 'abstract', 'title']
+numeric_features = ['page_length', 'agencies_count_uq', 'abstract_length', 'page_views_count',
+                    'RIN_count', 'CFR_ref_count']
+categorical_features = ['sig', 'effective_date_exists', 'comments_close_exists', 'docket_exists', 'eop']
 
 numeric_transformer = MinMaxScaler()
-categorical_transformer = OneHotEncoder(handle_unknown="ignore")
+categorical_transformer = OneHotEncoder(drop="if_binary")
 
 preprocessor = ColumnTransformer(
     transformers=[
@@ -53,7 +53,7 @@ preprocessor = ColumnTransformer(
 )
 
 clf = Pipeline(
-    steps=[("preprocessor", preprocessor), ("classifier", ComplementNB())]
+    steps=[("preprocessor", preprocessor), ("classifier", ComplementNB(norm=True))]
 )
 
 # distinguish X and y objects
@@ -98,7 +98,8 @@ print("#", 50 * "-")
 save_dir = p.parent.joinpath('data', 'analysis')
 savePath = save_dir / r"model_1_metrics.txt"
 with open(savePath, 'w') as textfile:
-    print("Classification Report: ", classification_report(y_test, y_pred, zero_division=0),
+    print("Model steps: ", clf.named_steps,
+          "\nClassification Report: ", classification_report(y_test, y_pred, zero_division=0),
           "\nAccuracy:", accuracy_score(y_test, y_pred),
           "\nF1 (weighted):", f1_score(y_test, y_pred, average='weighted', zero_division=0),
           "\nConfusion Matrix: ", df_cm,
