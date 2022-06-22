@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 
 from sklearn.compose import ColumnTransformer
-from sklearn.ensemble import VotingClassifier, RandomForestClassifier
+from sklearn.ensemble import VotingClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.metrics import classification_report, accuracy_score, f1_score, confusion_matrix
@@ -14,7 +14,6 @@ from sklearn.naive_bayes import ComplementNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import LabelEncoder, MinMaxScaler, OneHotEncoder
-from sklearn.svm import LinearSVC
 
 # set directory path
 p = Path.cwd()
@@ -68,42 +67,31 @@ print("#", 50 * "-")
 # Model pipeline
 
 # transformers
-numeric_transformer = MinMaxScaler()
+numeric_transformer = MinMaxScaler()  # use instead of StandardScaler -- complementNB does not accept negative values
 categorical_transformer = OneHotEncoder(drop="if_binary")
 
 # preprocessor
 preprocessor = ColumnTransformer(
     transformers=[
         ("num", numeric_transformer, numeric_features),
-        ("cat", categorical_transformer, categorical_features),
+        ("cat", categorical_transformer, categorical_features)
     ]
 )
 
 # base classifiers
 clf1 = ComplementNB(norm=True)
-clf2 = LogisticRegression(class_weight='balanced', random_state=a, max_iter=-1)
-clf3 = LinearSVC(class_weight='balanced', random_state=a, max_iter=-1)
-clf4 = RandomForestClassifier(criterion='entropy', class_weight='balanced', random_state=a)
-clf5 = KNeighborsClassifier()
+clf2 = LogisticRegression(class_weight='balanced', random_state=a, max_iter=500)
+clf3 = KNeighborsClassifier()
 
 # ensemble method
 eclf = VotingClassifier(estimators=[('cnb', clf1),
                                     ('lr', clf2),
-                                    ('svc', clf3),
-                                    ('rf', clf4),
-                                    ('knn', clf5)], voting='hard')
+                                    ('knn', clf3)], voting='hard')
 
 # grid search
 # reference: https://scikit-learn.org/stable/modules/ensemble.html#voting-classifier
 # see subsection 1.11.6.4. Using the VotingClassifier with GridSearchCV
-params = {'lr__penalty': ['l2', 'elasticnet'],
-          'lr__C': [0.1, 1.0, 10.0, 100.0],
-          'rf__n_estimators': [20, 100, 250],
-          'rf__max_features': ['sqrt', 0.8],
-          'knn__n_neighbors': [5, 99, 341],
-          'knn__weights': ['uniform', 'distance'],
-          'knn__p': [1, 2]}
-
+params = {'knn__n_neighbors': [5, 99, 341]}
 grid = GridSearchCV(estimator=eclf, param_grid=params, cv=5)
 
 # pipeline for classifier
@@ -138,7 +126,7 @@ save_dir = p.parent.joinpath('data', 'analysis')
 savePath = save_dir / r"model_3_metrics.txt"
 with open(savePath, 'w') as textfile:
     print("Model steps: ", clf.named_steps,
-          "Classification Report: ", classification_report(y_test, y_pred, zero_division=0),
+          "\nClassification Report: ", classification_report(y_test, y_pred, zero_division=0),
           "\nAccuracy:", accuracy_score(y_test, y_pred),
           "\nF1 (weighted):", f1_score(y_test, y_pred, average='weighted', zero_division=0),
           "\nConfusion Matrix: ", df_cm,
