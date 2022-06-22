@@ -1,16 +1,13 @@
 #%% --------------------------------------------------
 # init
-import re
-from collections import Counter
 from pathlib import Path
 
 from nltk.corpus import stopwords
 import numpy as np
 import pandas as pd
 
-from sklearn.feature_extraction.text import TfidfVectorizer
-
 from clean_text import *
+from generate_wordcloud import *
 
 # set directory path
 p = Path.cwd()
@@ -59,7 +56,8 @@ for t in type_list:
     corpus = " ".join(df.loc[bool_type, 'action'].tolist())
     type_corpus.update({t: corpus})
 
-for t in type_corpus: #.values():
-    print(t)
+clean_corpus = {}
+for k,v in zip(type_corpus.keys(), type_corpus.values()):
+    clean_corpus.update({k: clean_text(v)})
 
-#clean_tokenize_text(type_corpus['Rule'])
+generate_basic_wordcloud()
