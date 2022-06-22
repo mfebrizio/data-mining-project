@@ -1,7 +1,7 @@
 # import packages
 import re
 from string import punctuation
-from nltk.corpus import stopwords
+#from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 
 
@@ -34,7 +34,7 @@ def clean_text(text):
     text = re.sub(' +', ' ', text).strip()  # Function to remove multiple spaces
     text_tokens = word_tokenize(text)
     text_tokens = [w for w in text_tokens if w not in punctuation]
-    text_tokens = [w for w in text_tokens if w not in set(stopwords.words('english'))]  # delete stopwords from text
+    # text_tokens = [w for w in text_tokens if w not in set(stopwords.words('english'))]  # delete stopwords from text
     clean = ' '.join(text_tokens)
     return clean
 
@@ -68,5 +68,5 @@ def clean_tokenize_text(text):
     text = re.sub(' +', ' ', text).strip()  # Function to remove multiple spaces
     text_tokens = word_tokenize(text)
     text_tokens = [w for w in text_tokens if w not in punctuation]
-    text_tokens = [w for w in text_tokens if w not in set(stopwords.words('english'))]  # delete stopwords from text
+    # text_tokens = [w for w in text_tokens if w not in set(stopwords.words('english'))]  # delete stopwords from text
     return text_tokens
