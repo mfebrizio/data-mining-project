@@ -49,12 +49,9 @@ I will primarily rely on the sci-kit learn user guide and lecture notes to obtai
 
 ## Model Evaluation
 
-Metrics
+I will use the accuracy score and the F1-score as metrics fo evaluating the models. Because the dataset is imbalanced in terms of document types (i.e., the majority of documents are type=="Notice"), the F1-score is a better metric to use, so I will weight its results more heavily.
 
-- examine confusion matrix
-
-- accuracy score
-- f1 score
+I also will produce and examine a confusion matrix for each model. This will help me get a sense which document types the model is better or worse at classifying.
 
 ## Anticipated Project Schedule
 
