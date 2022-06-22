@@ -1,3 +1,10 @@
+
+---
+title: Final Project Proposal  
+author: Mark Febrizio  
+date: 2022-Jun-22  
+---
+
 # Proposal
 
 Building a Classifier to Identify the Type of Federal Register Documents
@@ -14,28 +21,52 @@ One major challenge to research on agency rulemaking is that documents, particul
 
 To address this problem, I will build a classification model that categorizes Federal Register documents by their type. Although the problem stems from a set of uncategorized documents, a majority of documents are labeled by type, making it possible to train and test a supervised learning model on a target with labels. Once achieving a sufficient accuracy score, the model can be applied to the uncategorized data to help mitigate the problem of missing document types.
 
+## Database
+
+I will use the [Federal Register REST API](https://www.federalregister.gov/reader-aids/developer-resources/rest-api) as my data source. Containing hundreds of thousands of documents (if not millions), the database is sufficiently large to train machine learning algorithms.
+
+I plan on restricting the data collected to the 1990s (specifically, 1994-1999) to focus on documents most similar to those missing labels and to limit the size of dataset to a reasonable amount. The Federal Register API only goes back to 1994, even though the journal was published for several decades prior (see, [Govinfo](https://www.govinfo.gov/app/collection/fr) for PDF copies dating back to 1936).
+
 ## Model Selection
 
-Multinomial Naive Bayes or Complement Naive Bayes?
-https://scikit-learn.org/stable/modules/naive_bayes.html
+I will use a several types of supervised learning models to build the classifier.
 
-Linear SVM (class_weight='balanced', random_state=a)
-https://scikit-learn.org/stable/modules/svm.html
-https://scikit-learn.org/stable/modules/generated/sklearn.svm.LinearSVC.html#sklearn.svm.LinearSVC
+First, I will use a set of categorical and numerical features to train the classifier.
 
-Random forests (n_estimators=10?)
-https://scikit-learn.org/stable/modules/ensemble.html#forests-of-randomized-trees
+I plan on beginning with a [Naive Bayes](https://scikit-learn.org/stable/modules/naive_bayes.html) model, especially because such models are used for document classification in other contexts. I use the [Complement NB](https://scikit-learn.org/stable/modules/naive_bayes.html#complement-naive-bayes) model, rather than the Multinomial NB model, because it is more appropriate for imbalanced data sets.
 
+To build on this initial model, I will use different ensemble methods to build a model.
+
+I will use the boosting algorithm, [AdaBoost](https://scikit-learn.org/stable/modules/ensemble.html#adaboost), which fits a sequence of weak learners that weights the data so that future models having a higher likelihood of seeing misclassified observations. This approach will leverage many iterations of the Complement NB model. The final classifications are made via weighted majority vote.
+
+Next, I will use a [voting classifier](https://scikit-learn.org/stable/modules/ensemble.html#voting-classifier) algorithm to combine several different types of models and then take a majority vote of the predicted labels. Here, the Complement NB model can be combined with K-Nearest Neighbors, logistic regression, tree models, or support vector machines. 
+
+Last, I will use the text-based features of the documents, rather than numeric or categorical variables, to classify the documents. Here, I will try a simple Complement NB model again.
+
+I will use Python and its associated libraries, such as sklearn, pandas, and numpy, to implement the machine learning algorithms. More detail on the environment and code I used is contained in the project [Github repository](https://github.com/mfebrizio/data-mining-project.git).
+
+I will primarily rely on the sci-kit learn user guide and lecture notes to obtain the necessary background to apply these supervised learning models.
 
 ## Model Evaluation
 
+Metrics
+
+- examine confusion matrix
+
+- accuracy score
+- f1 score
 
 ## Anticipated Project Schedule
 
+This project can be completed in approximately 10 days.
+
 1. Data collection
+- 0.5 days
 	a. Retrieve document metadata from API
 	b. Format and save data as json
+
 2. Data preprocessing
+- 2.5 days
 	a. Data cleaning
 		- identifying relevant features
 		- formatting features
@@ -46,19 +77,28 @@ https://scikit-learn.org/stable/modules/ensemble.html#forests-of-randomized-tree
 		- numeric
 		- categorical
 	d. Creating train/test samples
+
 3. Exploratory data analysis
+- 1 day
+
 4. Modeling
+- 4 days
 	a. Training
 	b. Predicting
 	c. Calculating metrics
 	d. Evaluation
-5. Results
 
+5. Analyze results
+- 1.5 days
 
 ## References
 
+Li, Susan, [Multi-Class Text Classification Model Comparison and Selection](https://towardsdatascience.com/multi-class-text-classification-model-comparison-and-selection-5eb066197568), Towards Data Science, published Sep. 25, 2018.
 
-https://stackoverflow.com/questions/65327433/machine-learning-classification-using-categorical-and-text-data-as-input
+Pedregosa et al., [Scikit-learn: Machine Learning in Python](http://jmlr.csail.mit.edu/papers/v12/pedregosa11a.html), JMLR 12, pp. 2825-2830, 2011.
 
-https://towardsdatascience.com/multi-class-text-classification-model-comparison-and-selection-5eb066197568
+scikit-learn 1.1.1, [User Guide](https://scikit-learn.org/stable/user_guide.html), revised May 2022.
 
+scikit-learn 1.1.1, [API Reference](https://scikit-learn.org/stable/modules/classes.html), revised May 2022.
+
+Stackoverflow, [Machine Learning Classification using categorical and text data as input](https://stackoverflow.com/questions/65327433/machine-learning-classification-using-categorical-and-text-data-as-input), modified Dec. 16, 2020.

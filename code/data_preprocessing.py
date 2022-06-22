@@ -131,26 +131,21 @@ print(dfCore['eop'].value_counts(dropna=False), '\n')
 
 #%% --------------------------------------------------
 # Text column cleaning
-# these columns: # action; abstract; title; [x dates]
+# these columns: # action; abstract; title; [dates?]
 
 # boolean for filtering presidential documents
-bool_prez = np.array(dfCore['type'] == "Presidential Document")
+# bool_prez = np.array(dfCore['type'] == "Presidential Document") -- better not to use labels to generate features
+bool_eop = np.array(dfCore['eop'] == 1)
 
 # impute missing text: action
 bool_na = np.array(dfCore['action'].isna())
-dfCore.loc[bool_na & bool_prez, 'action'] = 'presidential document'
-dfCore.loc[bool_na & ~bool_prez, 'action'] = dfCore.loc[bool_na & ~bool_prez, 'title'].tolist()
+dfCore.loc[bool_na & bool_eop, 'action'] = 'presidential document'
+dfCore.loc[bool_na & ~bool_eop, 'action'] = dfCore.loc[bool_na & ~bool_eop, 'title'].tolist()
 
 # impute missing text: abstract/summary
 bool_na = np.array(dfCore['abstract'].isna())
-dfCore.loc[bool_na & bool_prez, 'abstract'] = 'presidential document'
-dfCore.loc[bool_na & ~bool_prez, 'abstract'] = dfCore.loc[bool_na & ~bool_prez, 'title'].tolist()
-
-# clean text columns -- this takes too long!
-# test: clean_text(dfCore['action'][0])
-# dfCore.loc[:, 'action'] = dfCore['action'].apply(clean_text)
-# dfCore.loc[:, 'abstract'] = dfCore['abstract'].apply(clean_text)
-# dfCore.loc[:, 'title'] = dfCore['title'].apply(clean_text)
+dfCore.loc[bool_na & bool_eop, 'abstract'] = 'presidential document'
+dfCore.loc[bool_na & ~bool_eop, 'abstract'] = dfCore.loc[bool_na & ~bool_eop, 'title'].tolist()
 
 #%% --------------------------------------------------
 # Filter dataframe columns

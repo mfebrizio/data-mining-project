@@ -1,0 +1,7 @@
+# subfolders
+figures/**
+tables/**
+screenshots/**
+
+# PowerPoint files
+.pptx

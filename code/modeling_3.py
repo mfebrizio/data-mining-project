@@ -15,6 +15,8 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import LabelEncoder, MinMaxScaler, OneHotEncoder
 
+from cm_to_heatmap import *
+
 # set directory path
 p = Path.cwd()
 data_dir = p.parent.joinpath('data', 'processed')
@@ -138,3 +140,10 @@ if savePath.exists():
     print("Saved successfully!")
 else:
     print("Error saving file.")
+
+# save confusion matrix as heatmap
+fig_dir = p.parent.joinpath('presentation', 'figures')
+figPath = fig_dir / r'cm_heatmap_model_3.png'
+df_cm.index = list(range(0,4))
+df_cm.columns = list(range(0,4))
+cm_to_heatmap(df_cm, title=r'Confusion Matrix: Model 3', figname=figPath)
