@@ -1,9 +1,16 @@
 #%% --------------------------------------------------
 # init
+import re
+from collections import Counter
 from pathlib import Path
 
+from nltk.corpus import stopwords
 import numpy as np
 import pandas as pd
+
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+from clean_text import *
 
 # set directory path
 p = Path.cwd()
@@ -44,4 +51,15 @@ print("#", 50 * "-")
 #%% --------------------------------------------------
 # Data viz
 
+type_corpus = {}
+type_list = df['type'].value_counts().index.tolist()
+type_list.remove('Presidential Document')
+for t in type_list:
+    bool_type = df['type'] == t
+    corpus = " ".join(df.loc[bool_type, 'action'].tolist())
+    type_corpus.update({t: corpus})
 
+for t in type_corpus: #.values():
+    print(t)
+
+#clean_tokenize_text(type_corpus['Rule'])
