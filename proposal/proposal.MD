@@ -1,7 +1,6 @@
 # Proposal
 
 title: Building a Classifier to Identify the Type of Federal Register Documents  
-author: Mark Febrizio  
 date: 2022-Jun-22  
 
 ## Author Information
