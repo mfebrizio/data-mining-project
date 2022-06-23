@@ -4,7 +4,6 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-
 from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.model_selection import train_test_split
@@ -52,7 +51,7 @@ y = np.array(df[label]).ravel()
 # encode target
 le = LabelEncoder()
 y_enc = le.fit_transform(y)
-print("Encoded classes: ", list(zip(range(0,4),le.classes_)), sep="\n")
+print("Encoded classes: ", list(zip(range(0, 4), le.classes_)), sep="\n")
 print("#", 50 * "-")
 
 # train-test split
@@ -63,7 +62,7 @@ print(f"X_train observations: {len(X_train)}",
       f"y_test observations: {len(y_test)}", sep="\n")
 print("#", 50 * "-")
 
-#----------------------------------------------------------
+# ----------------------------------------------------------
 # Model pipeline
 
 # transformers
@@ -131,6 +130,6 @@ else:
 # save confusion matrix as heatmap
 fig_dir = p.parent.joinpath('presentation', 'figures')
 figPath = fig_dir / r'cm_heatmap_model_2.png'
-df_cm.index = list(range(0,4))
-df_cm.columns = list(range(0,4))
+df_cm.index = list(range(0, 4))
+df_cm.columns = list(range(0, 4))
 cm_to_heatmap(df_cm, title=r'Confusion Matrix: Model 2', figname=figPath)

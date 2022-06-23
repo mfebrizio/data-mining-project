@@ -10,9 +10,7 @@ import numpy as np
 import pandas as pd
 
 from clean_agencies import *
-#from clean_text import *
 from columns_to_date import *
-from search_columns import *
 
 # set directory path
 p = Path.cwd()

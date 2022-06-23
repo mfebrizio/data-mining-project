@@ -42,9 +42,6 @@ fieldsList = ['citation', 'document_number',  # unique identifiers
 year_range = list(map(str, range(1994, 2000)))  # range end is exclusive
 quarters = [("01-01", "03-31"), ("04-01", "06-30"), ("07-01", "09-30"), ("10-01", "12-31")]
 
-# conditions[publication_date][gte]
-# conditions[publication_date][lte]
-
 # dictionary of parameters
 dcts_params = {'per_page': res_per_page,
                'page': page_offset,

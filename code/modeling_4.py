@@ -4,7 +4,6 @@ from pathlib import Path
 from nltk.corpus import stopwords
 import numpy as np
 import pandas as pd
-
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import classification_report, accuracy_score, f1_score, confusion_matrix
 from sklearn.model_selection import train_test_split
@@ -45,7 +44,7 @@ y = np.array(df['type']).ravel()
 # encode target
 le = LabelEncoder()
 y_enc = le.fit_transform(y)
-print("Encoded classes: ", list(zip(range(0,4),le.classes_)), sep="\n")
+print("Encoded classes: ", list(zip(range(0, 4), le.classes_)), sep="\n")
 
 # train-test split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=622)
@@ -72,7 +71,7 @@ conf_matrix = confusion_matrix(y_test, y_pred)
 index_list = list(map(lambda x: 'true_' + str(x), range(0, 4)))
 column_list = list(map(lambda x: 'pred_' + str(x), range(0, 4)))
 df_cm = pd.DataFrame(conf_matrix, index=index_list, columns=column_list)
-print("Encoded classes: ", list(zip(range(0,4),le.classes_)), sep="\n")
+print("Encoded classes: ", list(zip(range(0, 4), le.classes_)), sep="\n")
 print("Confusion Matrix: ", df_cm, sep="\n")
 print("#", 50 * "-")
 
@@ -98,6 +97,6 @@ else:
 # save confusion matrix as heatmap
 fig_dir = p.parent.joinpath('presentation', 'figures')
 figPath = fig_dir / r'cm_heatmap_model_4.png'
-df_cm.index = list(range(0,4))
-df_cm.columns = list(range(0,4))
+df_cm.index = list(range(0, 4))
+df_cm.columns = list(range(0, 4))
 cm_to_heatmap(df_cm, title=r'Confusion Matrix: Model 4', figname=figPath)

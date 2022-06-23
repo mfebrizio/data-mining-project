@@ -2,13 +2,9 @@
 # init
 from pathlib import Path
 
-#from nltk.corpus import stopwords
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-
-#from clean_text import *
-#from generate_wordcloud import *
 
 # set directory path
 p = Path.cwd()
@@ -220,13 +216,6 @@ fig.savefig(figPath, facecolor='w', edgecolor='w',
             orientation='landscape',
             transparent=False, bbox_inches='tight', pad_inches=0.2)
 plt.close(fig)
-
-#%% -------------------------------------------------------------------------
-# Values by Document Type (scatter)
-
-
-
-
 
 #%% misc
 

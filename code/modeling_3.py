@@ -4,7 +4,6 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-
 from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import VotingClassifier
 from sklearn.linear_model import LogisticRegression
@@ -54,7 +53,7 @@ y = np.array(df[label]).ravel()
 # encode target
 le = LabelEncoder()
 y_enc = le.fit_transform(y)
-print("Encoded classes: ", list(zip(range(0,4),le.classes_)), sep="\n")
+print("Encoded classes: ", list(zip(range(0, 4), le.classes_)), sep="\n")
 print("#", 50 * "-")
 
 # train-test split
@@ -144,6 +143,6 @@ else:
 # save confusion matrix as heatmap
 fig_dir = p.parent.joinpath('presentation', 'figures')
 figPath = fig_dir / r'cm_heatmap_model_3.png'
-df_cm.index = list(range(0,4))
-df_cm.columns = list(range(0,4))
+df_cm.index = list(range(0, 4))
+df_cm.columns = list(range(0, 4))
 cm_to_heatmap(df_cm, title=r'Confusion Matrix: Model 3', figname=figPath)
