@@ -35,4 +35,4 @@ The Python code should be run in the following sequence:
 - modeling_3.py
 - modeling_4.py
 
-Executing main.py runs the code in this sequence.
+Executing `main.py` runs the code in this sequence.
