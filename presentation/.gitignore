@@ -1,6 +1,6 @@
 # subfolders
-figures/**
-tables/**
+**/figures/**
+**/tables/**
 screenshots/**
 
 # PowerPoint files
