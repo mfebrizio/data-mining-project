@@ -1,6 +1,6 @@
 # folder paths
-presentation/figures/
-presentation/screenshots/
+presentation/figures/**
+presentation/screenshots/**
 
 # PowerPoint files
 .pptx
