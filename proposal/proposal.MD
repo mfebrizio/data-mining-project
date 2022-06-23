@@ -1,13 +1,13 @@
-
----
-title: Final Project Proposal  
-author: Mark Febrizio  
-date: 2022-Jun-22  
----
-
 # Proposal
 
-Building a Classifier to Identify the Type of Federal Register Documents
+title: Building a Classifier to Identify the Type of Federal Register Documents  
+author: Mark Febrizio  
+date: 2022-Jun-22  
+
+## Author Information
+Mark Febrizio  
+mfebrizio@gwu.edu  
+DATS 6103 - Summer 2022  
 
 ## Background
 
