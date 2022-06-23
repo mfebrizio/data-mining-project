@@ -4,4 +4,4 @@ tables/**
 screenshots/**
 
 # PowerPoint files
-*.pptx
+.pptx
