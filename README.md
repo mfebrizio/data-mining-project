@@ -25,14 +25,14 @@ DATS 6103 - Summer 2022
 ## Code Sequence
 
 The Python code should be run in the following sequence:  
-- retrieve_FR_data.py
-- data_preprocessing.py
-	- calls modules: clean_agencies.py, columns_to_date.py
-- EDA.py
-	- calls modules: cm_to_heatmap.py
-- modeling_1.py
-- modeling_2.py
-- modeling_3.py
-- modeling_4.py
+- `retrieve_FR_data.py`
+- `data_preprocessing.py`
+	- calls modules: `clean_agencies.py`, `columns_to_date.py`
+- `EDA.py`
+	- calls modules: `cm_to_heatmap.py`
+- `modeling_1.py`
+- `modeling_2.py`
+- `modeling_3.py`
+- `modeling_4.py`
 
 Executing `main.py` runs the code in this sequence.
