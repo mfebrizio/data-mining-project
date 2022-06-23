@@ -19,6 +19,9 @@ DATS 6103 - Summer 2022
 **proposal/**  
 - contains Markdown file containing a description of the problem and a proposal for implementing the project
 
+**report/**  
+- contains final report for the project
+
 ## Code Sequence
 
 The Python code should be run in the following sequence:  
