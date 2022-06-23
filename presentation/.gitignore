@@ -1,11 +1,6 @@
 # subfolders
 figures/**
-tables/**
 screenshots/**
 
 # PowerPoint files
 .pptx
-
-# exclude everything except PDFs
-/*
-!.pdf
