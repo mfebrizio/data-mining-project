@@ -1,3 +1,10 @@
+# folder paths
+presentation/figures/
+presentation/screenshots/
+
+# PowerPoint files
+.pptx
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
