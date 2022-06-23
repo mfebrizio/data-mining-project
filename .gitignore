@@ -5,6 +5,9 @@ presentation/screenshots/**
 # PowerPoint files
 .pptx
 
+# Word Documents
+.docx
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
